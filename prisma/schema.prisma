@@ -24,26 +24,46 @@ model organization {
 }
 
 model User {
-  id             String        @id @default(uuid())
-  name           String?
-  email          String?       @unique
-  password       String
   // createdAt     DateTime  @default(now()) @map(name: "created_at")
   // updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  hiearchy       Role          @default(BASIC)
+  id       String  @id @default(uuid())
+  name     String?
+  email    String? @unique
+  password String
+  hiearchy Role    @default(BASIC)
 
-  position       Position?     @relation(fields: [positionId], references: [id])
-  positionId     String?
+  position   Position? @relation(fields: [positionId], references: [id])
+  positionId String?
+
   organization   organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
-
-  @@map(name: "users")
+  schedule       Schedule[]
 }
 
 model Position {
   id    String @id @default(uuid())
   name  String
   users User[]
+}
+
+model Schedule {
+  id            String   @id @default(uuid())
+  mondayFrom    DateTime
+  mondayTo      DateTime
+  tuesdayFrom   DateTime
+  tuesdayTo     DateTime
+  wednesdayFrom DateTime
+  wednesdayTo   DateTime
+  thursdayFrom  DateTime
+  thursdayTo    DateTime
+  fridayFrom    DateTime
+  fridayTo      DateTime
+  saturdayFrom  DateTime
+  saturdayTo    DateTime
+  sundayFrom    DateTime
+  sundayTo      DateTime
+  User          User?    @relation(fields: [userId], references: [id])
+  userId        String?
 }
 
 enum Role {
