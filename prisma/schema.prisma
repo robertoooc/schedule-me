@@ -1,0 +1,53 @@
+// schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Post {
+  id        String  @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  // author    User?   @relation(fields: [authorId], references: [id])
+  // authorId  String?
+}
+
+model organization {
+  id        String @id @default(uuid())
+  name      String @unique
+  employees User[]
+}
+
+model User {
+  id             String        @id @default(uuid())
+  name           String?
+  email          String?       @unique
+  password       String
+  // createdAt     DateTime  @default(now()) @map(name: "created_at")
+  // updatedAt     DateTime  @updatedAt @map(name: "updated_at")
+  hiearchy       Role          @default(BASIC)
+
+  position       Position?     @relation(fields: [positionId], references: [id])
+  positionId     String?
+  organization   organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?
+
+  @@map(name: "users")
+}
+
+model Position {
+  id    String @id @default(uuid())
+  name  String
+  users User[]
+}
+
+enum Role {
+  BASIC
+  ADMIN
+  OWNER
+}
