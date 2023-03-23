@@ -32,6 +32,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (!user) return { props: {} };
 
+  console.log(user, 'work')
   // Always use superjson as Next.js
   // can't serialize prisma objects by default
   return {
