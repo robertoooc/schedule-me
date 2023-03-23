@@ -75,9 +75,10 @@ export default function SignUp() {
           {isError && <p>User exists</p>}
 
           <Link href="/">
-            <a className="block underline" href="/">
+            {/* <a className="block underline" href="/">
               Login
-            </a>
+            </a> */}
+            Login
           </Link>
         </div>
       </form>

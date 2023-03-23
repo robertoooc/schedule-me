@@ -57,9 +57,10 @@ export default function Login() {
         {isError && <p>User password combination not found</p>}
 
         <Link href="/signup">
-          <a className="block underline" href="/signup">
+          {/* <a className="block underline" href="/signup">
             Sign up
-          </a>
+          </a> */}
+          sign up
         </Link>
       </div>
     </form>

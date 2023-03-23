@@ -38,6 +38,7 @@ export function authenticateUser(res: NextApiResponse, user: User): void {
   });
 
   setCookie(res, "auth", token, cookieOptions);
+  console.log('user shouyld be signed in now')
 }
 
 // This removes the auth cookie, effectively logging out
@@ -48,6 +49,7 @@ export function clearUser(res: NextApiResponse): void {
     path: "/",
     maxAge: 1,
   });
+  console.log('clear')
 }
 
 // This gives back the user behind a given request
@@ -68,8 +70,13 @@ export async function userFromRequest(
       where: { email: (data as any).email },
     });
 
-    if (user) user.password = "";
+    if (!user) return undefined
 
+      user.password = "";
+      return user
+    
+
+    
     // return user;
   } catch (error) {
     return undefined;

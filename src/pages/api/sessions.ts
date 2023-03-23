@@ -22,6 +22,7 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
         const JWT_TOKEN_KEY = process.env.JWT_TOKEN_KEY;
         if (JWT_TOKEN_KEY) {
           authenticateUser(res, findUser);
+          res.status(200).json(findUser)
         }
       } else {
         res.status(400).json({ msg: "incorrect password or email" });

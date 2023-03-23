@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient } from "@prisma/client";
 import argon2 from "argon2";
+import { authenticateUser } from "@/web/tokens";
 const prisma = new PrismaClient();
 
 export default async function handler(
@@ -25,8 +26,8 @@ export default async function handler(
             email: email,
           },
         });
-        if (findUser)
-          return res.status(400).json({ message: "User already exists" });
+        if (findUser) return res.status(400).json({ message: "User already exists" });
+
         const hashedPassword = await argon2.hash(password)
         const createUser = await prisma.user.create({
           data:{
@@ -35,6 +36,8 @@ export default async function handler(
             password:hashedPassword  
           }
         })
+        authenticateUser(res, createUser);
+        // might need to authenticate to keep in cookies here
         res.status(200).json(createUser)
       } catch (err) {
         console.log(err);
