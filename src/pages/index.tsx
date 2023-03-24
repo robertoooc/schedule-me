@@ -3,11 +3,10 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { GetServerSidePropsContext } from "next";
 import { User } from "@prisma/client";
-import Login from '@/components/Login';
 import axios from 'redaxios'
 import { userFromRequest } from '@/web/tokens';
 import SuperJSON from 'superjson';
-import SignUp from '@/components/Signup';
+import Session from '@/components/Session';
 
 interface Props {
   user?: User;  
@@ -15,9 +14,15 @@ interface Props {
 
 const inter = Inter({ subsets: ['latin'] })
 export default function Home({ user }: Props) {
-  if (!user) return <SignUp/>;
-
-  const handleLogout = () => axios.delete("/sessions");
+  if (!user) return <Session/>;
+  console.log(user)
+  const handleLogout = async () => {
+    try{
+      await axios.delete("/api/sessions");
+    }catch(err){
+      console.log(err)
+    }
+  }
 
   return (
     <main className="max-w-4xl mx-auto py-20 space-y-8">
@@ -29,7 +34,6 @@ export default function Home({ user }: Props) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  console.log(context.req, 'hi')
   const user = await userFromRequest(context.req);
 
   if (!user) return { props: {} };
