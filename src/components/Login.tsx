@@ -25,7 +25,7 @@ export default function Login() {
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
-  const handleSubmit = async(e: React.FormEvent<HTMLInputElement>) => {
+  const handleSubmit = async(e: any) => {
     e.preventDefault()
     // const users = await userFromRequest(context.req);
     console.log('here')
@@ -33,14 +33,18 @@ export default function Login() {
       email,
       password
     }
-    const response = await axios.post('/api/sessions', {user})
-    console.log(response.data)
+    try{
+      const response = await axios.post('/api/sessions', {user})
+      console.log(response.data)
+    }catch(err){
+      console.log(err)
+    }
   };
 
   return (
     <div className=" m-auto">
       <form
-        onSubmit={()=>handleSubmit}
+        onSubmit={handleSubmit}
         className="max-w-[400px] w-full mx-auto bg-zinc-800 p-8 px-8 rounded-lg"
       >
         <div className="flex flex-col text-gray-400 py-2">

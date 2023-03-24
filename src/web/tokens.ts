@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
-import { serialize } from "cookie";
+// import { serialize, cookie } from "cookie";
+import cookie from 'cookie'
 import { NextApiResponse } from "next";
 import { IncomingMessage } from "http";
 import { PrismaClient } from "@prisma/client";
@@ -24,8 +25,9 @@ function setCookie(
 ): void {
   const stringValue =
     typeof value === "object" ? `j:${JSON.stringify(value)}` : String(value);
-
-  res.setHeader("Set-Cookie", serialize(name, String(stringValue)))
+  console.log(`RES ${res}, name: ${name}, value: ${value}, options ${options}`)
+  // res.setHeader("Set-Cookie", cookie.serialize(name, String(stringValue)))
+  res.setHeader("Set-Cookie", cookie.serialize("token", value, options))
 }
 
 // This sets the cookie on a NextApiResponse so we can authenticate
