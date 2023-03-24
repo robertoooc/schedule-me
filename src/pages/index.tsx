@@ -7,6 +7,7 @@ import Login from '@/components/Login';
 import axios from 'redaxios'
 import { userFromRequest } from '@/web/tokens';
 import SuperJSON from 'superjson';
+import SignUp from '@/components/Signup';
 
 interface Props {
   user?: User;  
@@ -14,7 +15,7 @@ interface Props {
 
 const inter = Inter({ subsets: ['latin'] })
 export default function Home({ user }: Props) {
-  if (!user) return <Login />;
+  if (!user) return <SignUp/>;
 
   const handleLogout = () => axios.delete("/sessions");
 
@@ -28,6 +29,7 @@ export default function Home({ user }: Props) {
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  console.log(context.req, 'hi')
   const user = await userFromRequest(context.req);
 
   if (!user) return { props: {} };

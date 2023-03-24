@@ -59,8 +59,9 @@ export function clearUser(res: NextApiResponse): void {
 export async function userFromRequest(
   req: IncomingMessage & { cookies: NextApiRequestCookies }
 ): Promise<User | undefined> {
-  const { auth: token } = req.cookies;
-
+  // const { auth: token } = req.cookies.token;
+  const token = req.cookies?.token
+  console.log(req.cookies.token, '💆‍♀️')
   if (!token || !JWT_TOKEN_KEY) return undefined;
 
   try {
