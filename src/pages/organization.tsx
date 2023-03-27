@@ -14,7 +14,8 @@ export default function Company({ user }: Props){
   const handleSubmit = async(e:any)=>{
     try{
       e.preventDefault()
-      const response = await axios.post('/api/company')
+      
+      const response = await axios.post('/api/company', {companyName: name})
     }catch(err){
       console.log(err)
     }

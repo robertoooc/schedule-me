@@ -18,21 +18,37 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
       const token = req.cookies?.token;
       if (!token || token == undefined) throw new Error("JWT token is missing");
 
-      interface JWTPayload{
+      interface JWTPayload {
         email: string;
         iat: number;
         exp: number;
-    }
-      const decode = await <JWTPayload>jwt.verify(token, process.env.JWT_TOKEN_KEY);
+      }
+      const decode = await (<JWTPayload>(
+        jwt.verify(token, process.env.JWT_TOKEN_KEY)
+      ));
       console.log(decode);
       const findUser = await prisma.user.findUnique({
-        where:{
-          email: decode.email
+        where: {
+          email: decode.email,
+        },
+      });
+      if (!findUser) throw new Error("Cannot Find User");
+
+      const companyName = req.body.companyName;
+      const findCompany = await prisma.organization.findUnique({
+        where: {
+          name: companyName,
+        },
+      });
+      if (findCompany) throw new Error("Company already exists");
+
+      const newCompany = await prisma.organization.create({
+        data:{
+          name:companyName
         }
       })
-      if(!findUser) throw new Error("Cannot Find User");
 
-      const companyName = req.body.companyName
+      console.log(newCompany)
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
