@@ -10,6 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await userFromRequest(req);
   if (method == "POST") {
     if (user == undefined) res.status(404).json({ msg: "user not found" });
+
     try{
       const companyName = req.body.companyName;
       const findCompany = await prisma.organization.findUnique({
@@ -18,13 +19,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       if (findCompany) throw new Error("Company already exists");
-  
+      
+      if(user == undefined) throw Error('')
+      const employees = [
+        user
+      ]
+
       const newCompany = await prisma.organization.create({
         data: {
           name: companyName,
+          // employees: employees
         },
       });
-  
+      
+
       console.log(newCompany);
 
     }catch(err){
