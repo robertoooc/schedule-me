@@ -56,12 +56,11 @@ export function clearUser(res: NextApiResponse): void {
 
 // This gives back the user behind a given request
 // either on API routes or getServerSideProps
-export async function userFromRequest(
-  req: IncomingMessage & { cookies: NextApiRequestCookies }
+export async function userFromRequest(req: IncomingMessage & { cookies: NextApiRequestCookies }
 ): Promise<User | undefined> {
   // const { auth: token } = req.cookies.token;
   const token = req.cookies?.token
-  console.log(req.cookies.token, '💆‍♀️')
+  console.log(req.cookies.token, '🧶')
   if (!token || !JWT_TOKEN_KEY) return undefined;
 
   try {
@@ -76,6 +75,7 @@ export async function userFromRequest(
     if (!user) return undefined
 
       user.password = "";
+
       return user
     
 
