@@ -28,7 +28,14 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const newCompany = await prisma.organization.create({
         data: {
           name: companyName,
-          // employees: employees
+          employees:{
+            connect: {
+              id: user.id
+            }
+          }
+        },
+          include: {
+          employees: true
         },
       });
       
