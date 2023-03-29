@@ -3,11 +3,12 @@ import { PrismaClient } from "@prisma/client";
 import argon2 from "argon2";
 import { authenticateUser, clearUser } from "@/web/tokens";
 import defaultHandler from "../_defaultHandler";
+import nextConnect from "next-connect";
 
 const prisma = new PrismaClient();
 
-const handler = defaultHandler<NextApiRequest, NextApiResponse>()
-  .post(async (req, res) => {
+const handler = nextConnect()
+  .post(async (req:NextApiRequest, res:NextApiResponse) => {
     try {
       const { email, password }: { email: string; password: string } =
         req.body.user;
@@ -32,7 +33,7 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
       res.status(400).json({ msg: "yo my bad" });
     }
   })
-  .delete(async (req, res) => {
+  .delete(async (req:NextApiRequest, res:NextApiResponse) => {
     clearUser(res);
     res.status(200).json({msg : "user signed out"})
   });

@@ -4,6 +4,7 @@ import argon2 from "argon2";
 import { authenticateUser, clearUser } from "@/web/tokens";
 import defaultHandler from "../_defaultHandler";
 import jwt from "jsonwebtoken";
+import nextConnect from "next-connect";
 
 const prisma = new PrismaClient();
 declare var process: {
@@ -12,8 +13,15 @@ declare var process: {
   };
 };
 
-const handler = defaultHandler<NextApiRequest, NextApiResponse>()
-  .post(async (req, res) => {
+const handler = nextConnect()
+  .get(async (req: NextApiRequest, res: NextApiResponse) => {
+    try {
+    } catch (err) {
+      console.log(err);
+    }
+  })
+  .post(defaultHandler,async (req: NextApiRequest, res: NextApiResponse) => {
+    console.log("we in here");
     try {
       const token = req.cookies?.token;
       if (!token || token == undefined) throw new Error("JWT token is missing");
@@ -43,18 +51,18 @@ const handler = defaultHandler<NextApiRequest, NextApiResponse>()
       if (findCompany) throw new Error("Company already exists");
 
       const newCompany = await prisma.organization.create({
-        data:{
-          name:companyName
-        }
-      })
+        data: {
+          name: companyName,
+        },
+      });
 
-      console.log(newCompany)
+      console.log(newCompany);
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
     }
   })
-  .delete(async (req, res) => {
+  .delete(async (req: NextApiRequest, res: NextApiResponse) => {
     clearUser(res);
     res.status(200).json({ msg: "user signed out" });
   });
