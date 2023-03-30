@@ -15,7 +15,8 @@ export default function Company({ user }: Props){
     try{
       e.preventDefault()
       
-      const response = await axios.post('/api/company', {companyName: name})
+      // const response = await axios.post('/api/company', {companyName: name})
+      const response = await axios.put('/api/company', {companyId: name})
     }catch(err){
       console.log(err)
     }
