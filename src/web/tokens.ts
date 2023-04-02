@@ -25,7 +25,7 @@ function setCookie(
 ): void {
   const stringValue =
     typeof value === "object" ? `j:${JSON.stringify(value)}` : String(value);
-  console.log(`RES ${res}, name: ${name}, value: ${value}, options ${options}`)
+  // console.log(`RES ${res}, name: ${name}, value: ${value}, options ${options}`)
   // res.setHeader("Set-Cookie", cookie.serialize(name, String(stringValue)))
   res.setHeader("Set-Cookie", cookie.serialize("token", value, options))
 }
@@ -60,7 +60,7 @@ export async function userFromRequest(req: IncomingMessage & { cookies: NextApiR
 ): Promise<User | undefined> {
   // const { auth: token } = req.cookies.token;
   const token = req.cookies?.token
-  console.log(req.cookies.token, '🧶')
+  // console.log(req.cookies.token, '🧶')
   if (!token || !JWT_TOKEN_KEY) return undefined;
 
   try {

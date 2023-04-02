@@ -8,43 +8,30 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   const user = await userFromRequest(req);
   if (method == "POST") {
-    if (user == undefined) res.status(404).json({ msg: "user not found" });
+    // if (user == undefined) res.status(404).json({ msg: "user not found" });
+    if (user == undefined) throw Error("no user logged in");
 
     try {
-      const companyName = req.body.companyName;
+      if (user.organizationId == null) {
+        res.status(404).json({ msg: "user belongs to no company" });
+        throw Error("user belongs to no company");
+      }
+
       const findCompany = await prisma.organization.findUnique({
         where: {
-          name: companyName,
+          id: user.organizationId,
         },
       });
-      if (findCompany) throw new Error("Company already exists");
 
-      if (user == undefined) throw Error("no user logged in");
-
-      // const updateuser = await prisma.user.update({
+      const positionName:string = req.body.positionName
+      // if(!positionName) console.log('noooooooo')
+      // console.log(positionName,'🧶')
+      // const findPosition = await prisma.position.findUnique({
       //   where:{
-      //     id: user.id
-      //   },
-      //   data:{
-      //     hiearchy: 'ADMIN'
+      //     organizationId: positionName
       //   }
       // })
-      const newCompany = await prisma.organization.create({
-        data: {
-          name: companyName,
-          employees: {
-            connect: {
-              id: user.id,
-            },
-          },
-        },
-        include: {
-          employees: true,
-        },
-      });
 
-      console.log(newCompany);
-      res.status(200).json(newCompany);
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
@@ -62,37 +49,36 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     } catch (err) {
       res.status(400).json({ msg: "yo my bad" });
     }
-  } else if( method == "PUT"){
+  } else if (method == "PUT") {
     const companyId = req.body.companyId;
-    try{
+    try {
       const findCompany = await prisma.organization.findUnique({
         where: {
           id: companyId,
         },
       });
-      
-      if(!findCompany) throw Error('company not found')
-      if(user == undefined) throw Error('No user')
-      
+
+      if (!findCompany) throw Error("company not found");
+      if (user == undefined) throw Error("No user");
+
       const updateCompany = await prisma.organization.update({
-        where:{
-          id: companyId
+        where: {
+          id: companyId,
         },
-        data:{
-          employees:{
-            connect:{
-              id: user.id
-            }
-          }
+        data: {
+          employees: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
-        include:{
-          employees:true
-        }
-      }
-      )
-      console.log(updateCompany)
-      res.status(200).json(updateCompany)
-    }catch(err){
+        include: {
+          employees: true,
+        },
+      });
+      console.log(updateCompany);
+      res.status(200).json(updateCompany);
+    } catch (err) {
       res.status(400).json({ msg: "yo my bad" });
     }
   }

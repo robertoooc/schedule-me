@@ -16,12 +16,14 @@ export default function Company({ user }: Props){
       e.preventDefault()
       
       // const response = await axios.post('/api/company', {companyName: name})
-      const response = await axios.put('/api/company', {companyId: name})
+      // const response = await axios.put('/api/company', {companyId: name})
+       const response = await axios.post('/api/position', {companyId: name})
+
     }catch(err){
       console.log(err)
     }
   }
-  console.log(user)
+  // console.log(user)
   return(
     <div>
       <form         
@@ -59,7 +61,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   if (!user) return { props: {} };
 
-  console.log(user, 'work')
+  // console.log(user, 'work')
   // Always use superjson as Next.js
   // can't serialize prisma objects by default
   return {
