@@ -26,11 +26,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const positionName:string = req.body.positionName
       // if(!positionName) console.log('noooooooo')
       // console.log(positionName,'🧶')
-      // const findPosition = await prisma.position.findUnique({
-      //   where:{
-      //     organizationId: positionName
-      //   }
-      // })
+      const findPosition = await prisma.position.create({
+        data:{
+          name: positionName,
+          organization: {
+            connect:{
+              id: user.organizationId
+            }
+          }
+        }
+      })
 
     } catch (err) {
       console.log(err);
