@@ -23,67 +23,86 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
 
-      const positionName:string = req.body.positionName
+      const positionName: string = req.body.positionName;
       // if(!positionName) console.log('noooooooo')
       // console.log(positionName,'🧶')
       const findPosition = await prisma.position.create({
-        data:{
+        data: {
           name: positionName,
           organization: {
-            connect:{
-              id: user.organizationId
-            }
-          }
-        }
-      })
-
+            connect: {
+              id: user.organizationId,
+            },
+          },
+        },
+      });
+      console.log(findPosition);
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
     }
   } else if (method == "GET") {
+    if (user == undefined) throw Error("no user logged in");
+
     try {
-      const companyId = req.body.companyId;
+      if (user.organizationId == null) {
+        res.status(404).json({ msg: "user belongs to no company" });
+        throw Error("user belongs to no company");
+      }
+
       const findCompany = await prisma.organization.findUnique({
         where: {
-          id: companyId,
-        },
-      });
-      console.log(findCompany);
-      res.status(200).json(findCompany);
-    } catch (err) {
-      res.status(400).json({ msg: "yo my bad" });
-    }
-  } else if (method == "PUT") {
-    const companyId = req.body.companyId;
-    try {
-      const findCompany = await prisma.organization.findUnique({
-        where: {
-          id: companyId,
+          id: user.organizationId,
         },
       });
 
-      if (!findCompany) throw Error("company not found");
-      if (user == undefined) throw Error("No user");
-
-      const updateCompany = await prisma.organization.update({
-        where: {
-          id: companyId,
-        },
+      const positionName: string = req.body.positionName;
+      const findPosition = await prisma.position.create({
         data: {
-          employees: {
+          name: positionName,
+          organization: {
             connect: {
-              id: user.id,
+              id: user.organizationId,
             },
           },
         },
-        include: {
-          employees: true,
+      });
+      console.log(findPosition);
+    } catch (err) {
+      console.log(err);
+      res.status(400).json({ msg: "yo my bad" });
+    }
+  } else if (method == "PUT") {
+    try {
+      if (user == undefined) throw Error("no user logged in");
+
+      const positionId = req.body.positionId;
+      const newUserToAdd = req.body.newUserToAdd
+      const findPosition = await prisma.position.findUnique({
+        where: {
+          id: positionId,
         },
       });
-      console.log(updateCompany);
-      res.status(200).json(updateCompany);
+      if (!findPosition) throw Error("position not found");
+
+      const updatePosition = await prisma.position.update({
+        where:{
+          id:positionId
+        },
+        data:{
+          users:{
+            connect:{
+              id:newUserToAdd
+            }
+          }
+        },
+        include:{
+          users:true
+        }
+      })
+      console.log(updatePosition)
     } catch (err) {
+      console.log(err)
       res.status(400).json({ msg: "yo my bad" });
     }
   }

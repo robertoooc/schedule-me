@@ -17,7 +17,9 @@ export default function Company({ user }: Props){
       
       // const response = await axios.post('/api/company', {companyName: name})
       // const response = await axios.put('/api/company', {companyId: name})
-       const response = await axios.post('/api/position', {companyId: name})
+      //  const response = await axios.post('/api/position', {companyId: name,positionName:'test'})
+       const response = await axios.put('/api/position', {positionId: name,newUserToAdd:'c4fd01c9-45e8-4599-8ed7-ee1a06ba4294'})
+      //  const response = await axios.get('/api/position', {companyId: name,positionName:'test'})
 
     }catch(err){
       console.log(err)
