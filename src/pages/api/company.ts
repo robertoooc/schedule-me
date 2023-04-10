@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (user == undefined) res.status(404).json({ msg: "user not found" });
 
     try {
-      const companyName = req.body.companyName;
+      const companyName:string = req.body.companyName;
       const findCompany = await prisma.organization.findUnique({
         where: {
           name: companyName,
@@ -21,14 +21,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       if (user == undefined) throw Error("no user logged in");
 
-      // const updateuser = await prisma.user.update({
-      //   where:{
-      //     id: user.id
-      //   },
-      //   data:{
-      //     hiearchy: 'ADMIN'
-      //   }
-      // })
+      const updateuser = await prisma.user.update({
+        where:{
+          id: user.id
+        },
+        data:{
+          hiearchy: 'ADMIN'
+        }
+      })
+
       const newCompany = await prisma.organization.create({
         data: {
           name: companyName,
@@ -50,20 +51,29 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).json({ msg: "yo my bad" });
     }
   } else if (method == "GET") {
+    if (user == undefined) res.status(404).json({ msg: "user not found" });
     try {
-      const companyId = req.body.companyId;
+      // const companyId:string = req.body.companyId;
+      if(!user?.organizationId) throw Error('user does not have permission')
       const findCompany = await prisma.organization.findUnique({
         where: {
-          id: companyId,
-        },
+          id: user?.organizationId,
+        },include:{
+          employees:true
+        }
       });
+      if(findCompany){
+        findCompany.employees.forEach((user)=>{
+          console.log(user)
+        })
+      }
       console.log(findCompany);
       res.status(200).json(findCompany);
     } catch (err) {
       res.status(400).json({ msg: "yo my bad" });
     }
   } else if( method == "PUT"){
-    const companyId = req.body.companyId;
+    const companyId:string = req.body.companyId;
     try{
       const findCompany = await prisma.organization.findUnique({
         where: {

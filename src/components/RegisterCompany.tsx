@@ -1,25 +1,29 @@
 import { GetServerSidePropsContext } from "next";
-import { User } from "@prisma/client";
+import { User,organization } from "@prisma/client";
 import axios from 'redaxios'
 import { userFromRequest } from '@/web/tokens';
 import React, { useState } from "react";
 import SuperJSON from 'superjson';
-import RegisterCompany from "@/components/RegisterCompany";
 interface Props {
   user?: User;  
 }
 
-export default function Company({ user }: Props){
+export default function RegisterCompany({ user }: Props){
   const [name,setName]=useState<string>('')
 
   const handleSubmit = async(e:any)=>{
     try{
       e.preventDefault()
       
-      // const response = await axios.post('/api/company', {companyName: name})
+      const response = await axios.post('/api/company', {companyName: name})
+      console.log(response.data)
+      console.log(user)
+      // const test = async (context:GetServerSidePropsContext)=>{
+      //   const updateUser = await userFromRequest(context.req)
+      //   console.log(updateUser)
+      // }
       // const response = await axios.put('/api/company', {companyId: name})
       //  const response = await axios.post('/api/position', {companyId: name,positionName:'test'})
-       const response = await axios.put('/api/position', {positionId: name,newUserToAdd:'c4fd01c9-45e8-4599-8ed7-ee1a06ba4294'})
       //  const response = await axios.get('/api/position', {companyId: name,positionName:'test'})
 
     }catch(err){
@@ -29,7 +33,7 @@ export default function Company({ user }: Props){
   // console.log(user)
   return(
     <div>
-      {/* <form         
+      <form         
         className="max-w-fit max-h-fit mx-auto bg-zinc-800 p-8 px-8 rounded-lg"
         onSubmit={handleSubmit}
         >
@@ -54,23 +58,22 @@ export default function Company({ user }: Props){
         >
           Create
         </button>
-      </form> */}
-      <RegisterCompany user ={user}/>
+      </form>
     </div>
   )
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const user = await userFromRequest(context.req);
+// export async function getServerSideProps(context: GetServerSidePropsContext) {
+//   const user = await userFromRequest(context.req);
 
-  if (!user) return { props: {} };
+//   if (!user) return { props: {} };
 
-  // console.log(user, 'work')
-  // Always use superjson as Next.js
-  // can't serialize prisma objects by default
-  return {
-    props: SuperJSON.serialize({
-      user,
-    }).json,
-  };
-}
+//   // console.log(user, 'work')
+//   // Always use superjson as Next.js
+//   // can't serialize prisma objects by default
+//   return {
+//     props: SuperJSON.serialize({
+//       user,
+//     }).json,
+//   };
+// }

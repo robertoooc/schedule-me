@@ -37,6 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         },
       });
       console.log(findPosition);
+      res.status(200).json(findPosition);
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
@@ -55,19 +56,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           id: user.organizationId,
         },
       });
+    
+      if(!findCompany) throw Error('company does not exist')
 
-      const positionName: string = req.body.positionName;
-      const findPosition = await prisma.position.create({
-        data: {
-          name: positionName,
-          organization: {
-            connect: {
-              id: user.organizationId,
-            },
-          },
+      const positionId = req.body.positionId
+      const findPosition = await prisma.position.findUnique({
+        where:{
+          id: positionId
         },
-      });
-      console.log(findPosition);
+        include:{
+          users:true
+        }
+      })
+
+      if(!findPosition) throw Error('Position not found')
+
+      if(findPosition.organizationId!= user.organizationId) throw Error('You do not have access')
+
+      res.status(200).json(findPosition)
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
@@ -77,7 +83,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (user == undefined) throw Error("no user logged in");
 
       const positionId = req.body.positionId;
-      const newUserToAdd = req.body.newUserToAdd
+      const newUserToAdd = req.body.newUserToAdd;
       const findPosition = await prisma.position.findUnique({
         where: {
           id: positionId,
@@ -86,23 +92,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (!findPosition) throw Error("position not found");
 
       const updatePosition = await prisma.position.update({
-        where:{
-          id:positionId
+        where: {
+          id: positionId,
         },
-        data:{
-          users:{
-            connect:{
-              id:newUserToAdd
-            }
-          }
+        data: {
+          users: {
+            connect: {
+              id: newUserToAdd,
+            },
+          },
         },
-        include:{
-          users:true
-        }
-      })
-      console.log(updatePosition)
+        include: {
+          users: true,
+        },
+      });
+      console.log(updatePosition);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       res.status(400).json({ msg: "yo my bad" });
     }
   }
