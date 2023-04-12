@@ -41,20 +41,20 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!user) return { props: {} };
   
   const companyId = user.organizationId
+  // const company = await axios.get('http://localhost:3000/api/company')
+  console.log(user.organizationId)
   if(!companyId)   return {
     props: SuperJSON.serialize({
       user,
     }).json,
   };
 
-  console.log(user.organizationId)
 
   // const company = await axios.get('/api/company',companyId)
   try{
 
 
-    const company = await axios.get('http://localhost:3000/api/company')
-    console.log(company)
+    // console.log(company)
   }catch(err){
     console.log(err)
   }

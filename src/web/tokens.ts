@@ -62,26 +62,26 @@ export async function userFromRequest(req: IncomingMessage & { cookies: NextApiR
   const token = req.cookies?.token
   // console.log(req.cookies.token, '🧶')
   if (!token || !JWT_TOKEN_KEY) return undefined;
-
   try {
     const data = jwt.verify(token, JWT_TOKEN_KEY);
-
+    // console.log(data,'👹')
     if (!data) return undefined;
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email: (data as any).email },
     });
-
     if (!user) return undefined
-
-      user.password = "";
-
+    
+    user.password = "";
+    
+    console.log(user,'🔥')
       return user
     
 
     
     // return user;
   } catch (error) {
+    console.log(error)
     return undefined;
   }
 }

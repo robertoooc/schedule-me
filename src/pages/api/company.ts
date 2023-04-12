@@ -5,8 +5,10 @@ import { userFromRequest } from "@/web/tokens";
 const prisma = new PrismaClient();
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { method } = req;
   const user = await userFromRequest(req);
+  // console.log(await userFromRequest(req))
+  const { method } = req;
+  // console.log(user,"🧶")
   if (method == "POST") {
     if (user == undefined) res.status(404).json({ msg: "user not found" });
 
@@ -51,10 +53,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       res.status(400).json({ msg: "yo my bad" });
     }
   } else if (method == "GET") {
-    if (user == undefined) res.status(404).json({ msg: "user not found" });
+    // console.log(user,'🧶')
+    if (!user) res.status(404).json({ msg: "user not found" });
     try {
       // const companyId:string = req.body.companyId;
+      // if(user?.organizationId !=null || user?.organizationId!= undefined) throw Error('user does not have permission')
       if(!user?.organizationId) throw Error('user does not have permission')
+
       const findCompany = await prisma.organization.findUnique({
         where: {
           id: user?.organizationId,
@@ -69,8 +74,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       console.log(findCompany);
       res.status(200).json(findCompany);
-    } catch (err) {
-      res.status(400).json({ msg: "yo my bad" });
+    } catch (err:any) {
+      res.status(400).json({ msg: err.message });
     }
   } else if( method == "PUT"){
     const companyId:string = req.body.companyId;
