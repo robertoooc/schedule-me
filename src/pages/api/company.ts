@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient, User } from "@prisma/client";
+import { organization, PrismaClient, User } from "@prisma/client";
 import { userFromRequest } from "@/web/tokens";
 
 const prisma = new PrismaClient();
@@ -22,8 +22,10 @@ export async function findCompany(user: User){
       })
     }
     console.log(findCompany,'😡');
+    return findCompany
   }catch(err){
     console.log(err)
+    return undefined
   }
 }
 
