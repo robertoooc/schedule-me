@@ -1,8 +1,32 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { userFromRequest } from "@/web/tokens";
 
 const prisma = new PrismaClient();
+
+export async function findCompany(user: User){
+  try{
+    if(!user?.organizationId) throw Error('user does not have permission')
+    
+    const findCompany = await prisma.organization.findUnique({
+      where: {
+        id: user?.organizationId,
+      },include:{
+        employees:true
+      }
+    });
+    if(findCompany){
+      findCompany.employees.forEach((user)=>{
+        user.password = ''
+        console.log(user)
+      })
+    }
+    console.log(findCompany,'😡');
+  }catch(err){
+    console.log(err)
+  }
+}
+
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await userFromRequest(req);
@@ -58,21 +82,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       // const companyId:string = req.body.companyId;
       // if(user?.organizationId !=null || user?.organizationId!= undefined) throw Error('user does not have permission')
-      if(!user?.organizationId) throw Error('user does not have permission')
-
-      const findCompany = await prisma.organization.findUnique({
-        where: {
-          id: user?.organizationId,
-        },include:{
-          employees:true
-        }
-      });
-      if(findCompany){
-        findCompany.employees.forEach((user)=>{
-          console.log(user)
-        })
-      }
-      console.log(findCompany);
       res.status(200).json(findCompany);
     } catch (err:any) {
       res.status(400).json({ msg: err.message });

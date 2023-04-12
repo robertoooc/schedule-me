@@ -5,6 +5,7 @@ import { userFromRequest } from '@/web/tokens';
 import React, { useState } from "react";
 import SuperJSON from 'superjson';
 import RegisterCompany from "@/components/RegisterCompany";
+import { findCompany } from "./api/company";
 interface Props {
   user?: User;  
 }
@@ -41,6 +42,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!user) return { props: {} };
   
   const companyId = user.organizationId
+  const findCompanyInfo = await findCompany(user)
   // const company = await axios.get('http://localhost:3000/api/company')
   console.log(user.organizationId)
   if(!companyId)   return {
