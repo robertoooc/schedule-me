@@ -27,13 +27,25 @@ export default function Company({ user, companyInfo }: Props) {
     if(companyInfo == undefined) router.push('/organization')
   },[])
   // console.log(companyInfo.employees)
-
+  const userInfo = companyInfo?.employees !=undefined ? companyInfo?.employees.forEach((user)=>{
+    return <Employees users={user}/>
+  }) : <div></div>
   return(
     <div>
       <div className="text-center bg-sky-400 ">
         <p className=" text-3xl text-gray-100 font-bold py-3">{companyInfo?.name}</p>
-        </div>
-        <Employees users={companyInfo?.employees}/>
+      </div>
+      <div>
+        {userInfo}
+      </div>
+      <div>
+        <p>Employees</p>
+        {/* <Employees users={companyInfo?.employees}/> */}
+      </div>
+      <div>
+        <p>Positions</p>
+        {/* <Employees users={companyInfo?.employees}/> */}
+      </div>
     </div>
   )
 }

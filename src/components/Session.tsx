@@ -17,7 +17,7 @@ export default function Session() {
     try {
       const url = signup ? `/api/users` : `/api/sessions`
       console.log(url)
-      const response = await axios.post("/api/users", { user });
+      const response = await axios.post(url, { user });
       console.log(response.data);
     } catch (err) {
       console.log(err);
