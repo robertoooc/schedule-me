@@ -12,10 +12,11 @@ export default function Employees({ users }: props){
   //     </div>
   //   )
   // })
-  console.log(users.name)
+  console.log(users.name,'🥶')
   return(
     <div>
-      {users.name}
+      {/* {users.name} */}
+      <p>h</p>
     </div>
   )
 }
