@@ -12,7 +12,8 @@ export async function findCompany(user: User){
       where: {
         id: user?.organizationId,
       },include:{
-        employees:true
+        employees:true,
+        positions:true
       }
     });
     if(findCompany){
