@@ -28,27 +28,23 @@ export default function Company({ user, companyInfo }: Props) {
     if (companyInfo == undefined) router.push("/organization");
   }, []);
 
-  const createPosition = async(e:any)=>{
+  const createPosition = async (e: any) => {
     e.preventDefault();
-    try{
-      const response = await axios.post('/api/position',{positionName})
-      console.log(response.data,'🍉')
-    }catch(err){
-      console.log(err)
+    try {
+      const response = await axios.post("/api/position", { positionName });
+      console.log(response.data, "🍉");
+    } catch (err) {
+      console.log(err);
     }
-    }
+  };
+
   let userInfo;
   if (companyInfo?.employees != undefined)
-    userInfo = companyInfo?.employees.map((user) => {
-      return <Employees users={user} key={user.id} />;
-    });
-    let positionInfo;
-    console.log(companyInfo)
-  if (companyInfo?.positions != undefined){
-    positionInfo = companyInfo?.positions.map((user) => {
-      return <Positions position={user} key={user.id} />;
-    });
-  }
+    userInfo = <Employees users={companyInfo?.employees} />;
+
+  let positionInfo;
+  if (companyInfo?.positions != undefined)
+    positionInfo = <Positions positions={companyInfo.positions} />;
 
   return (
     <div>
@@ -57,22 +53,10 @@ export default function Company({ user, companyInfo }: Props) {
           {companyInfo?.name}
         </p>
       </div>
-      <button onClick={()=>setSeeEmployees(!seeEmployees)}>{!seeEmployees ? `Employees` : `Positions`}</button>
-      <div className="">
-        <p className="text-center bg-slate-300 text-lg">
-          {seeEmployees ? `Employees` : `Positions`}
-        </p>
-        <div className=" flex place-content-evenly space-x-5">
-          <p>Name</p>
-          <p>Email</p>
-        </div>
-        {seeEmployees ? userInfo :positionInfo}
-      </div>
-      <form onSubmit={createPosition}>
-        <label>Position Name: </label>
-        <input type='text' autoComplete="off" value={positionName} onChange={(e)=>setPositionName(e.target.value)}/>
-        <button type="submit">Submit</button>
-      </form>
+      <button onClick={() => setSeeEmployees(!seeEmployees)}>
+        {!seeEmployees ? `Employees` : `Positions`}
+      </button>
+      <div className="">{seeEmployees ? userInfo : positionInfo}</div>
     </div>
   );
 }

@@ -1,14 +1,14 @@
 import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 // import { serialize, cookie } from "cookie";
-import cookie from 'cookie'
+import cookie from "cookie";
 import { NextApiResponse } from "next";
 import { IncomingMessage } from "http";
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequestCookies } from "next/dist/server/api-utils";
 const prisma = new PrismaClient();
 
-const JWT_TOKEN_KEY = process.env.JWT_TOKEN_KEY 
+const JWT_TOKEN_KEY = process.env.JWT_TOKEN_KEY;
 const cookieOptions = {
   httpOnly: true,
   maxAge: 2592000,
@@ -25,9 +25,7 @@ function setCookie(
 ): void {
   const stringValue =
     typeof value === "object" ? `j:${JSON.stringify(value)}` : String(value);
-  // console.log(`RES ${res}, name: ${name}, value: ${value}, options ${options}`)
-  // res.setHeader("Set-Cookie", cookie.serialize(name, String(stringValue)))
-  res.setHeader("Set-Cookie", cookie.serialize("token", value, options))
+  res.setHeader("Set-Cookie", cookie.serialize("token", value, options));
 }
 
 // This sets the cookie on a NextApiResponse so we can authenticate
@@ -40,7 +38,7 @@ export function authenticateUser(res: NextApiResponse, user: User): void {
   });
 
   setCookie(res, "auth", token, cookieOptions);
-  console.log('user shouyld be signed in now')
+  console.log("user shouyld be signed in now");
 }
 
 // This removes the auth cookie, effectively logging out
@@ -51,37 +49,30 @@ export function clearUser(res: NextApiResponse): void {
     path: "/",
     maxAge: 1,
   });
-  console.log('clear')
+  console.log("clear");
 }
 
 // This gives back the user behind a given request
 // either on API routes or getServerSideProps
-export async function userFromRequest(req: IncomingMessage & { cookies: NextApiRequestCookies }
+export async function userFromRequest(
+  req: IncomingMessage & { cookies: NextApiRequestCookies }
 ): Promise<User | undefined> {
-  // const { auth: token } = req.cookies.token;
-  const token = req.cookies?.token
-  // console.log(req.cookies.token, '🧶')
+  const token = req.cookies?.token;
   if (!token || !JWT_TOKEN_KEY) return undefined;
   try {
     const data = jwt.verify(token, JWT_TOKEN_KEY);
-    // console.log(data,'👹')
     if (!data) return undefined;
 
     let user = await prisma.user.findUnique({
       where: { email: (data as any).email },
     });
-    if (!user) return undefined
-    
-    user.password = "";
-    
-    console.log(user,'🔥')
-      return user
-    
+    if (!user) return undefined;
 
-    
-    // return user;
+    user.password = "";
+
+    return user;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return undefined;
   }
 }
