@@ -1,25 +1,44 @@
-import { Position } from "@prisma/client"
-
-interface props{
+import { Position } from "@prisma/client";
+import { useState } from "react";
+import axios from 'redaxios'
+interface props {
   positions: Position[];
 }
-export default function Positions({ positions }: props){
-  return(
+export default function Positions({ positions }: props) {
+  const [createPosition, setCreatePosition] = useState(false);
+  const [positionName,setPositionName]= useState('')
+
+  const submitForm = async(e:any)=>{
+    e.preventDefault();
+    try{
+      const response = await axios.post('/api/position',{positionName})
+      console.log(response.data)
+    }catch(err){
+      console.log(err)
+    }
+  }
+
+  const createPositionForm = createPosition ? (<form onSubmit={submitForm}>
+    <label>Position Name</label>
+    <input type="text" autoComplete="off" onChange={(e)=>setPositionName(e.target.value)}/>
+    <button type="submit">submit</button>
+  </form>) : null;
+  return (
     <div>
       <p className="text-center bg-slate-300 text-lg">Employees</p>
-      <div className=" flex place-content-evenly">
-        <p>Name</p>
-        <p>Email</p>
-      </div>
       <div>
-        {positions.map((position)=>{
-          return(
-          <div key={position.id} className='flex place-content-evenly'>
-            <p>{position.name}</p>
-            {/* <p>{user.email}</p> */}
-          </div>)
+        {positions.map((position) => {
+          return (
+            <div key={position.id} className="flex place-content-evenly">
+              <p>{position.name}</p>
+            </div>
+          );
         })}
       </div>
+      <button onClick={() => setCreatePosition(!createPosition)}>
+        Create Position
+      </button>
+      {createPositionForm}
     </div>
-  )
+  );
 }
