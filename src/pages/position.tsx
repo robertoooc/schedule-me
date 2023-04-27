@@ -11,14 +11,15 @@ export default function Position(){
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const user = await userFromRequest(context.req);
-  const positionId = context.query.positionId
-  // console.log(id,'🐙')
+  const {id} = context.query
+  console.log(id,'🐙')
 
   if (!user) return { props: {} };
 
   const companyInfo = await findCompany(user);
-  if(positionId == null || positionId == undefined) return {props:{}}
-  const positionInfo = await getPositionInfo(positionId)
+  if(id == null || id == undefined || Array.isArray(id)) return {props:{}}
+  const positionInfo = await getPositionInfo(id)
+  console.log(positionInfo)
   // const positionInfo = companyInfo?.positions.find(position => position.id == id)
   // console.log(positionInfo,'🥶')
   return {
