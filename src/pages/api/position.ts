@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 export const getPositionInfo = async (id:string) => {
   try {
-      console.log(id[0],'😃')
     const position = await prisma.position.findUnique({
       where: {
         id: id,

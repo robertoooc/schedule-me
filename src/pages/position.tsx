@@ -2,30 +2,62 @@ import { GetServerSidePropsContext } from "next";
 import { userFromRequest } from "@/web/tokens";
 import { findCompany } from "./api/company";
 import SuperJSON from "superjson";
-import { useRouter } from "next/router";
 import { getPositionInfo } from "./api/position";
-export default function Position(){
-  const router = useRouter()
-  const {id} = router.query
-  // console.log(id)
+import { User, Position } from "@prisma/client";
+import { useState } from "react";
+import Select from "react-select";
+
+interface company {
+  // id: string;
+  name: string;
+  employees?: User[];
+  positions?: Position[];
+}
+interface Props {
+  user?: User;
+  companyInfo: company;
+  positionInfo: Position;
+}
+export default function Positions({ user, companyInfo, positionInfo }: Props) {
+  const [value, setValue] = useState<string[]>([]);
+  const options = companyInfo?.employees?.map((user)=>{
+    return {value: user.id, label:user.name}
+  })
+  const handleUserChange=(selected:any)=>{
+    // setValue(selected.value)
+    const users = selected.map((user:{value:string,label:string}) =>{return user.value})
+    console.log(users)
+    setValue(users)
+  }
+  const addUser = async (e: any) => {
+    e.preventDefault();
+  };
+  
+  return (
+    <div>
+      <p>{positionInfo.name}</p>
+      <form onSubmit={addUser}>
+        <Select isMulti options={options} onChange={(value)=>handleUserChange(value)} instanceId='selectUser'/>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  );
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const user = await userFromRequest(context.req);
-  const {id} = context.query
-  console.log(id,'🐙')
+  const { id } = context.query;
 
   if (!user) return { props: {} };
 
   const companyInfo = await findCompany(user);
-  if(id == null || id == undefined || Array.isArray(id)) return {props:{}}
-  const positionInfo = await getPositionInfo(id)
-  console.log(positionInfo)
-  // const positionInfo = companyInfo?.positions.find(position => position.id == id)
-  // console.log(positionInfo,'🥶')
+  if (id == null || id == undefined || Array.isArray(id)) return { props: {} };
+  const positionInfo = await getPositionInfo(id);
+  console.log(positionInfo);
   return {
     props: SuperJSON.serialize({
       user,
       companyInfo,
+      positionInfo,
     }).json,
   };
 }

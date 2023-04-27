@@ -4,32 +4,32 @@ import { userFromRequest } from "@/web/tokens";
 
 const prisma = new PrismaClient();
 
-export async function findCompany(user: User){
-  try{
-    if(!user?.organizationId) throw Error('user does not have permission')
-    
+export async function findCompany(user: User) {
+  try {
+    if (!user?.organizationId) throw Error("user does not have permission");
+
     const findCompany = await prisma.organization.findUnique({
       where: {
         id: user?.organizationId,
-      },include:{
-        employees:true,
-        positions:true
-      }
+      },
+      include: {
+        employees: true,
+        positions: true,
+      },
     });
-    if(findCompany){
-      findCompany.employees.forEach((user)=>{
-        user.password = ''
-        console.log(user)
-      })
+    if (findCompany) {
+      findCompany.employees.forEach((user) => {
+        user.password = "";
+        // console.log(user)
+      });
     }
-    console.log(findCompany,'😡');
-    return findCompany
-  }catch(err){
-    console.log(err)
-    return undefined
+    // console.log(findCompany,'😡');
+    return findCompany;
+  } catch (err) {
+    console.log(err);
+    return undefined;
   }
 }
-
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const user = await userFromRequest(req);
@@ -40,7 +40,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (user == undefined) res.status(404).json({ msg: "user not found" });
 
     try {
-      const companyName:string = req.body.companyName;
+      const companyName: string = req.body.companyName;
       const findCompany = await prisma.organization.findUnique({
         where: {
           name: companyName,
@@ -51,13 +51,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (user == undefined) throw Error("no user logged in");
 
       const updateuser = await prisma.user.update({
-        where:{
-          id: user.id
+        where: {
+          id: user.id,
         },
-        data:{
-          hiearchy: 'ADMIN'
-        }
-      })
+        data: {
+          hiearchy: "ADMIN",
+        },
+      });
 
       const newCompany = await prisma.organization.create({
         data: {
@@ -86,40 +86,39 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       // const companyId:string = req.body.companyId;
       // if(user?.organizationId !=null || user?.organizationId!= undefined) throw Error('user does not have permission')
       res.status(200).json(findCompany);
-    } catch (err:any) {
+    } catch (err: any) {
       res.status(400).json({ msg: err.message });
     }
-  } else if( method == "PUT"){
-    const companyId:string = req.body.companyId;
-    try{
+  } else if (method == "PUT") {
+    const companyId: string = req.body.companyId;
+    try {
       const findCompany = await prisma.organization.findUnique({
         where: {
           id: companyId,
         },
       });
-      
-      if(!findCompany) throw Error('company not found')
-      if(user == undefined) throw Error('No user')
-      
+
+      if (!findCompany) throw Error("company not found");
+      if (user == undefined) throw Error("No user");
+
       const updateCompany = await prisma.organization.update({
-        where:{
-          id: companyId
+        where: {
+          id: companyId,
         },
-        data:{
-          employees:{
-            connect:{
-              id: user.id
-            }
-          }
+        data: {
+          employees: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
-        include:{
-          employees:true
-        }
-      }
-      )
-      console.log(updateCompany)
-      res.status(200).json(updateCompany)
-    }catch(err){
+        include: {
+          employees: true,
+        },
+      });
+      console.log(updateCompany);
+      res.status(200).json(updateCompany);
+    } catch (err) {
       res.status(400).json({ msg: "yo my bad" });
     }
   }
