@@ -4,6 +4,24 @@ import { userFromRequest } from "@/web/tokens";
 
 const prisma = new PrismaClient();
 
+export const getPositionInfo = async (id:string) => {
+  try {
+    const position = await prisma.position.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        organization: true,
+        users: true,
+      },
+    });
+    return position
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req;
   const user = await userFromRequest(req);
@@ -56,24 +74,25 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           id: user.organizationId,
         },
       });
-    
-      if(!findCompany) throw Error('company does not exist')
 
-      const positionId = req.body.positionId
+      if (!findCompany) throw Error("company does not exist");
+
+      const positionId = req.body.positionId;
       const findPosition = await prisma.position.findUnique({
-        where:{
-          id: positionId
+        where: {
+          id: positionId,
         },
-        include:{
-          users:true
-        }
-      })
+        include: {
+          users: true,
+        },
+      });
 
-      if(!findPosition) throw Error('Position not found')
+      if (!findPosition) throw Error("Position not found");
 
-      if(findPosition.organizationId!= user.organizationId) throw Error('You do not have access')
+      if (findPosition.organizationId != user.organizationId)
+        throw Error("You do not have access");
 
-      res.status(200).json(findPosition)
+      res.status(200).json(findPosition);
     } catch (err) {
       console.log(err);
       res.status(400).json({ msg: "yo my bad" });
