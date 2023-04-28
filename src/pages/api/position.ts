@@ -4,7 +4,7 @@ import { userFromRequest } from "@/web/tokens";
 
 const prisma = new PrismaClient();
 
-export const getPositionInfo = async (id:string) => {
+export const getPositionInfo = async (id: string) => {
   try {
     const position = await prisma.position.findUnique({
       where: {
@@ -15,7 +15,7 @@ export const getPositionInfo = async (id:string) => {
         users: true,
       },
     });
-    return position
+    return position;
   } catch (err) {
     console.log(err);
     return undefined;
@@ -101,8 +101,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       if (user == undefined) throw Error("no user logged in");
 
-      const positionId = req.body.positionId;
-      const newUserToAdd = req.body.newUserToAdd;
+      const positionId: string = req.body.positionId;
+      console.log(positionId);
+      const newUserToAdd: string[] = req.body.newUserToAdd;
       const findPosition = await prisma.position.findUnique({
         where: {
           id: positionId,
@@ -110,15 +111,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       if (!findPosition) throw Error("position not found");
 
+      const formatUserArrayId = newUserToAdd.map((user) => {
+        return { id: user };
+      });
+
       const updatePosition = await prisma.position.update({
         where: {
           id: positionId,
         },
         data: {
           users: {
-            connect: {
-              id: newUserToAdd,
-            },
+            connect: formatUserArrayId,
           },
         },
         include: {

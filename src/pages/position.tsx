@@ -6,9 +6,9 @@ import { getPositionInfo } from "./api/position";
 import { User, Position } from "@prisma/client";
 import { useState } from "react";
 import Select from "react-select";
-
+import axios from 'redaxios'
 interface company {
-  // id: string;
+  id: string;
   name: string;
   employees?: User[];
   positions?: Position[];
@@ -31,6 +31,12 @@ export default function Positions({ user, companyInfo, positionInfo }: Props) {
   }
   const addUser = async (e: any) => {
     e.preventDefault();
+    try{
+      const response = await axios.put('/api/position',{positionId:positionInfo.id,newUserToAdd:value })
+      console.log(response.data)
+    }catch(err){
+      console.log(err)
+    }
   };
   
   return (
