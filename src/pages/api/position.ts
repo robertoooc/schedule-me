@@ -102,7 +102,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (user == undefined) throw Error("no user logged in");
 
       const positionId: string = req.body.positionId;
-      console.log(positionId);
+
       const newUserToAdd: string[] = req.body.newUserToAdd;
       const findPosition = await prisma.position.findUnique({
         where: {

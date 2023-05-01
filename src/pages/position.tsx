@@ -3,10 +3,16 @@ import { userFromRequest } from "@/web/tokens";
 import { findCompany } from "./api/company";
 import SuperJSON from "superjson";
 import { getPositionInfo } from "./api/position";
-import { User, Position } from "@prisma/client";
+import { User } from "@prisma/client";
 import { useState } from "react";
 import Select from "react-select";
-import axios from 'redaxios'
+import axios from "redaxios";
+interface Position {
+  id: string;
+  name: string;
+  users: User[];
+  organization: company;
+}
 interface company {
   id: string;
   name: string;
@@ -20,30 +26,49 @@ interface Props {
 }
 export default function Positions({ user, companyInfo, positionInfo }: Props) {
   const [value, setValue] = useState<string[]>([]);
-  const options = companyInfo?.employees?.map((user)=>{
-    return {value: user.id, label:user.name}
-  })
-  const handleUserChange=(selected:any)=>{
-    // setValue(selected.value)
-    const users = selected.map((user:{value:string,label:string}) =>{return user.value})
-    console.log(users)
-    setValue(users)
-  }
+  const options = companyInfo?.employees?.map((user) => {
+    return { value: user.id, label: user.name };
+  });
+  const handleUserChange = (selected: any) => {
+    const users = selected.map((user: { value: string; label: string }) => {
+      return user.value;
+    });
+    setValue(users);
+  };
   const addUser = async (e: any) => {
     e.preventDefault();
-    try{
-      const response = await axios.put('/api/position',{positionId:positionInfo.id,newUserToAdd:value })
-      console.log(response.data)
-    }catch(err){
-      console.log(err)
+    try {
+      const response = await axios.put("/api/position", {
+        positionId: positionInfo.id,
+        newUserToAdd: value,
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
-  
+  // console.log(positionInfo.users)
   return (
     <div>
-      <p>{positionInfo.name}</p>
+      <p>{positionInfo?.name}</p>
+      <div>
+        {positionInfo.users.map((user) => {
+          return (
+            <div key={`${user.id}`}>
+              <div className="flex place-content-evenly">
+                <p>{user.name}</p>
+                <p>{user.email}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
       <form onSubmit={addUser}>
-        <Select isMulti options={options} onChange={(value)=>handleUserChange(value)} instanceId='selectUser'/>
+        <Select
+          isMulti
+          options={options}
+          onChange={(value) => handleUserChange(value)}
+          instanceId="selectUser"
+        />
         <button type="submit">Submit</button>
       </form>
     </div>
@@ -58,7 +83,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const companyInfo = await findCompany(user);
   if (id == null || id == undefined || Array.isArray(id)) return { props: {} };
   const positionInfo = await getPositionInfo(id);
-  console.log(positionInfo);
+  console.log("🙏", positionInfo);
   return {
     props: SuperJSON.serialize({
       user,
