@@ -1,6 +1,6 @@
 import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import nextConnect from "next-connect";
-import { NextResponse,NextRequest } from 'next/server'
+import { NextResponse, NextRequest } from "next/server";
 
 // export default function defaultHandler<ReqType, ResType>() {
 //   return nextConnect<ReqType, ResType>({
@@ -16,9 +16,9 @@ import { NextResponse,NextRequest } from 'next/server'
 // }
 const defaultHandler = (req: NextApiRequest) => {
   console.log(req.cookies?.token, "here");
-  
-    // next()
- return NextResponse.next()
+
+  // next()
+  return NextResponse.next();
 };
 export default defaultHandler;
 // const defaultHandler = (
@@ -27,7 +27,7 @@ export default defaultHandler;
 //   next: NextApiHandler
 // ) => {
 //   console.log(req.cookies?.token, "here");
-  
+
 //     // next()
 //  return NextResponse.next()
 // };

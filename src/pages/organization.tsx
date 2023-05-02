@@ -1,33 +1,35 @@
 import { GetServerSidePropsContext } from "next";
 import { User } from "@prisma/client";
-import axios from 'redaxios'
-import { userFromRequest } from '@/web/tokens';
+import axios from "redaxios";
+import { userFromRequest } from "@/web/tokens";
 import React, { useState } from "react";
-import SuperJSON from 'superjson';
+import SuperJSON from "superjson";
 import RegisterCompany from "@/components/RegisterCompany";
 interface Props {
-  user?: User;  
+  user?: User;
 }
 
-export default function Company({ user }: Props){
-  const [name,setName]=useState<string>('')
+export default function Company({ user }: Props) {
+  const [name, setName] = useState<string>("");
 
-  const handleSubmit = async(e:any)=>{
-    try{
-      e.preventDefault()
-      
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+
       // const response = await axios.post('/api/company', {companyName: name})
       // const response = await axios.put('/api/company', {companyId: name})
       //  const response = await axios.post('/api/position', {companyId: name,positionName:'test'})
-       const response = await axios.put('/api/position', {positionId: name,newUserToAdd:'c4fd01c9-45e8-4599-8ed7-ee1a06ba4294'})
+      const response = await axios.put("/api/position", {
+        positionId: name,
+        newUserToAdd: "c4fd01c9-45e8-4599-8ed7-ee1a06ba4294",
+      });
       //  const response = await axios.get('/api/position', {companyId: name,positionName:'test'})
-
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
   // console.log(user)
-  return(
+  return (
     <div>
       {/* <form         
         className="max-w-fit max-h-fit mx-auto bg-zinc-800 p-8 px-8 rounded-lg"
@@ -55,9 +57,9 @@ export default function Company({ user }: Props){
           Create
         </button>
       </form> */}
-      <RegisterCompany user ={user}/>
+      <RegisterCompany user={user} />
     </div>
-  )
+  );
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

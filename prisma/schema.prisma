@@ -29,8 +29,8 @@ model User {
 
   organization   organization? @relation(fields: [organizationId], references: [id])
   organizationId String?
-  schedule       Schedule?     @relation(fields: [scheduleId], references: [id])
-  scheduleId     String?
+
+  Schedule Schedule[]
 }
 
 model Position {
@@ -42,27 +42,16 @@ model Position {
 }
 
 model Schedule {
-  id            String   @id @default(uuid())
-  mondayFrom    DateTime
-  mondayTo      DateTime
-  tuesdayFrom   DateTime
-  tuesdayTo     DateTime
-  wednesdayFrom DateTime
-  wednesdayTo   DateTime
-  thursdayFrom  DateTime
-  thursdayTo    DateTime
-  fridayFrom    DateTime
-  fridayTo      DateTime
-  saturdayFrom  DateTime
-  saturdayTo    DateTime
-  sundayFrom    DateTime
-  sundayTo      DateTime
+  id        String   @id @default(uuid())
+  workDate  DateTime
+  startTime Decimal
+  endTime   Decimal
 
-  User User[]
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 enum Role {
   BASIC
   ADMIN
-  OWNER
 }

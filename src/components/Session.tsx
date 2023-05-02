@@ -6,7 +6,7 @@ export default function Session() {
   const [password, setPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [signup,setSignup]=useState<boolean>(true)
+  const [signup, setSignup] = useState<boolean>(true);
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const user = {
@@ -15,8 +15,8 @@ export default function Session() {
       password,
     };
     try {
-      const url = signup ? `/api/users` : `/api/sessions`
-      console.log(url)
+      const url = signup ? `/api/users` : `/api/sessions`;
+      console.log(url);
       const response = await axios.post(url, { user });
       console.log(response.data);
     } catch (err) {
@@ -31,21 +31,21 @@ export default function Session() {
         className="max-w-fit max-h-fit mx-auto bg-zinc-800 p-8 px-8 rounded-lg"
       >
         <h2 className="text-4xl dark:text-white font-bold text-center">
-           {signup? `Register` : `Login`}
+          {signup ? `Register` : `Login`}
         </h2>
-        {!signup? null: 
-        <div className="flex flex-col text-gray-400 py-2">
-          <label htmlFor="name">Name: </label>
-          <input
-            autoComplete="off"
-            id="name"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            required
-            className="rounded-lg text-black"
-          />
-        </div>
-        }
+        {!signup ? null : (
+          <div className="flex flex-col text-gray-400 py-2">
+            <label htmlFor="name">Name: </label>
+            <input
+              autoComplete="off"
+              id="name"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              required
+              className="rounded-lg text-black"
+            />
+          </div>
+        )}
         <div className="flex flex-col text-gray-400 py-2">
           <label htmlFor="email">Email: </label>
           <input
@@ -75,7 +75,12 @@ export default function Session() {
         >
           Submit
         </button>
-      <p className=" text-white underline flex justify-center" onClick={()=>setSignup(!signup)}>{signup? `Already have an account? Login`: `Need to register?`}</p>
+        <p
+          className=" text-white underline flex justify-center"
+          onClick={() => setSignup(!signup)}
+        >
+          {signup ? `Already have an account? Login` : `Need to register?`}
+        </p>
       </form>
       <p className="text-center text-red-600 mt-2">{message}</p>
     </div>

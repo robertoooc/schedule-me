@@ -26,19 +26,20 @@ export default async function handler(
             email: email,
           },
         });
-        if (findUser) return res.status(400).json({ message: "User already exists" });
+        if (findUser)
+          return res.status(400).json({ message: "User already exists" });
 
-        const hashedPassword = await argon2.hash(password)
+        const hashedPassword = await argon2.hash(password);
         const createUser = await prisma.user.create({
-          data:{
+          data: {
             name: name,
-            email:email,
-            password:hashedPassword  
-          }
-        })
+            email: email,
+            password: hashedPassword,
+          },
+        });
         authenticateUser(res, createUser);
         // might need to authenticate to keep in cookies here
-        res.status(200).json(createUser)
+        res.status(200).json(createUser);
       } catch (err) {
         console.log(err);
         res.status(400).json({ msg: "yo my bad" });

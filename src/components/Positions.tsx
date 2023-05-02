@@ -8,7 +8,7 @@ interface props {
 export default function Positions({ positions }: props) {
   const [createPosition, setCreatePosition] = useState(false);
   const [positionName, setPositionName] = useState("");
-  const router = useRouter()
+  const router = useRouter();
   const submitForm = async (e: any) => {
     e.preventDefault();
     try {
@@ -37,7 +37,9 @@ export default function Positions({ positions }: props) {
         {positions.map((position) => {
           return (
             <div key={position.id} className="flex place-content-evenly">
-              <p onClick={()=>router.push(`/position?id=${position.id}`)}>{position.name}</p>
+              <p onClick={() => router.push(`/position?id=${position.id}`)}>
+                {position.name}
+              </p>
             </div>
           );
         })}

@@ -1,23 +1,23 @@
 import { GetServerSidePropsContext } from "next";
-import { User,organization } from "@prisma/client";
-import axios from 'redaxios'
-import { userFromRequest } from '@/web/tokens';
+import { User, organization } from "@prisma/client";
+import axios from "redaxios";
+import { userFromRequest } from "@/web/tokens";
 import React, { useState } from "react";
-import SuperJSON from 'superjson';
+import SuperJSON from "superjson";
 interface Props {
-  user?: User;  
+  user?: User;
 }
 
-export default function RegisterCompany({ user }: Props){
-  const [name,setName]=useState<string>('')
+export default function RegisterCompany({ user }: Props) {
+  const [name, setName] = useState<string>("");
 
-  const handleSubmit = async(e:any)=>{
-    try{
-      e.preventDefault()
-      
-      const response = await axios.post('/api/company', {companyName: name})
-      console.log(response.data)
-      console.log(user)
+  const handleSubmit = async (e: any) => {
+    try {
+      e.preventDefault();
+
+      const response = await axios.post("/api/company", { companyName: name });
+      console.log(response.data);
+      console.log(user);
       // const test = async (context:GetServerSidePropsContext)=>{
       //   const updateUser = await userFromRequest(context.req)
       //   console.log(updateUser)
@@ -25,20 +25,19 @@ export default function RegisterCompany({ user }: Props){
       // const response = await axios.put('/api/company', {companyId: name})
       //  const response = await axios.post('/api/position', {companyId: name,positionName:'test'})
       //  const response = await axios.get('/api/position', {companyId: name,positionName:'test'})
-
-    }catch(err){
-      console.log(err)
+    } catch (err) {
+      console.log(err);
     }
-  }
+  };
   // console.log(user)
-  return(
+  return (
     <div>
-      <form         
+      <form
         className="max-w-fit max-h-fit mx-auto bg-zinc-800 p-8 px-8 rounded-lg"
         onSubmit={handleSubmit}
-        >
+      >
         <h2 className="text-4xl dark:text-white font-bold text-center">
-           Register a Company
+          Register a Company
         </h2>
 
         <div className="flex flex-col text-gray-400 py-2">
@@ -60,7 +59,7 @@ export default function RegisterCompany({ user }: Props){
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 // export async function getServerSideProps(context: GetServerSidePropsContext) {
