@@ -42,12 +42,21 @@ model Position {
 }
 
 model Schedule {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  weekStart DateTime
+  weekEnd   DateTime
+  workDays  WorkDay[]
+}
+
+model WorkDay {
   id        String   @id @default(uuid())
   startTime DateTime
   endTime   DateTime
 
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  Schedule   Schedule? @relation(fields: [scheduleId], references: [id])
+  scheduleId String?
 }
 
 enum Role {
