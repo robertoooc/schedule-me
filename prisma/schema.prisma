@@ -43,9 +43,8 @@ model Position {
 
 model Schedule {
   id        String   @id @default(uuid())
-  workDate  DateTime
-  startTime Decimal
-  endTime   Decimal
+  startTime DateTime
+  endTime   DateTime
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
