@@ -7,6 +7,9 @@ import axios from "redaxios";
 import { userFromRequest } from "@/web/tokens";
 import SuperJSON from "superjson";
 import Session from "@/components/Session";
+import FullCalendar from "@fullcalendar/react";
+import interactionPlugin from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
 
 interface Props {
   user?: User;

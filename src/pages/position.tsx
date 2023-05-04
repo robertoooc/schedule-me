@@ -7,6 +7,8 @@ import { User } from "@prisma/client";
 import { useState } from "react";
 import Select from "react-select";
 import axios from "redaxios";
+import Calendar from "@/components/Calendar";
+
 interface Position {
   id: string;
   name: string;
@@ -71,6 +73,7 @@ export default function Positions({ user, companyInfo, positionInfo }: Props) {
         />
         <button type="submit">Submit</button>
       </form>
+      <Calendar/>
     </div>
   );
 }

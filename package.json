@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fullcalendar/common": "^5.11.4",
+    "@fullcalendar/interaction": "^6.1.6",
+    "@fullcalendar/react": "^6.1.6",
+    "@fullcalendar/timegrid": "^6.1.6",
     "@prisma/client": "^4.11.0",
     "@tanstack/react-query": "^4.28.0",
     "@types/bcrypt": "^5.0.0",
