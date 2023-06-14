@@ -1,15 +1,11 @@
-import Head from "next/head";
 import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
 import { GetServerSidePropsContext } from "next";
 import { User } from "@prisma/client";
 import axios from "redaxios";
 import { userFromRequest } from "@/web/tokens";
 import SuperJSON from "superjson";
 import Session from "@/components/Session";
-import FullCalendar from "@fullcalendar/react";
-import interactionPlugin from "@fullcalendar/interaction";
-import timeGridPlugin from "@fullcalendar/timegrid";
+import Calendar from "@/components/Calendar";
 
 interface Props {
   user?: User;
@@ -33,6 +29,7 @@ export default function Home({ user }: Props) {
       <button type="button" onClick={handleLogout}>
         Logout
       </button>
+      <Calendar />
     </main>
   );
 }
