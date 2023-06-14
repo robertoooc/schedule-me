@@ -22,14 +22,14 @@ export default function Home({ user }: Props) {
       console.log(err);
     }
   };
-
+  // console.log
   return (
     <main className="max-w-4xl mx-auto py-20 space-y-8">
       Hello {user.name}!
       <button type="button" onClick={handleLogout}>
         Logout
       </button>
-      <Calendar />
+      {/* <Calendar position={null}/> */}
     </main>
   );
 }

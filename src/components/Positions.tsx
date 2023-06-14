@@ -2,6 +2,7 @@ import { Position } from "@prisma/client";
 import { useState } from "react";
 import axios from "redaxios";
 import { useRouter } from "next/router";
+
 interface props {
   positions: Position[];
 }

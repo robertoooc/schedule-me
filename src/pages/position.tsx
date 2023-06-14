@@ -48,7 +48,7 @@ export default function Positions({ user, companyInfo, positionInfo }: Props) {
       console.log(err);
     }
   };
-  // console.log(positionInfo.users)
+  console.log(positionInfo.users)
   return (
     <div>
       <p>{positionInfo?.name}</p>
@@ -73,7 +73,7 @@ export default function Positions({ user, companyInfo, positionInfo }: Props) {
         />
         <button type="submit">Submit</button>
       </form>
-      <Calendar/>
+      {/* <Calendar/> */}
     </div>
   );
 }

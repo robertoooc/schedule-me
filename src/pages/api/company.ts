@@ -14,9 +14,23 @@ export async function findCompany(user: User) {
       },
       include: {
         employees: true,
-        positions: true,
+        positions: {
+          include: {
+            users: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                hiearchy: true,
+                position: true,
+                organization: true,
+              },
+            },
+          },
+        },
       },
     });
+    // console.log(findCompany?.positions[1], "🧶");
     if (findCompany) {
       findCompany.employees.forEach((user) => {
         user.password = "";
